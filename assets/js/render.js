@@ -1,206 +1,143 @@
-window.Renderer = {
-    renderHome(data) {
-        const container = document.getElementById('app-container');
-        const book1 = data.books.find(b => b.volume === 1);
+import { updateSchema } from './schema.js';
+import { setAudio } from './audio.js';
 
-        let html = '';
+let DATA = null;
 
-        // Hero Spotlight
-        if (book1) {
-            html += `
-                <section class="hero-spotlight">
-                    <div class="hero-content">
-                        <h1>${book1.title}</h1>
-                        <p class="hero-tagline">${book1.tagline}</p>
-                        <p>${book1.blurb}</p>
-                        <div class="action-pills">
-                            <a href="#/book/${book1.slug}" class="btn btn-primary" style="background-color: #c0392b; color: white;">Buy Now</a>
-                            <span style="color: white; margin: 0 10px; align-self: center;">or</span>
-                            <a href="#/read/${book1.slug}" class="btn btn-secondary">Learn More</a>
-                        </div>
-                    </div>
-                    <div class="hero-cover">
-                        <img src="${book1.cover}" alt="${book1.title} Cover">
-                    </div>
-                </section>
-            `;
-        }
+export function setData(data) {
+  DATA = data;
+  populateJump();
+}
 
-        // Series Lore
-        html += `
-            <section class="series-lore">
-                <h2>The World of ${data.series.title}</h2>
-                <p>${data.series.lore}</p>
-            </section>
-        `;
+export function getData() { return DATA; }
 
-        // Books Grid
-        html += `
-            <h2>Series Reading Order</h2>
-            <div class="grid-auto">
-                ${data.books.sort((a, b) => a.volume - b.volume).map(book => `
-                    <div class="book-card">
-                        <div class="book-card-cover">
-                            <img src="${book.cover}" alt="${book.title}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3 class="book-card-title">Vol ${book.volume}: ${book.title}</h3>
-                            <span class="book-card-status">${book.status}</span>
-                            <a href="#/book/${book.slug}" class="book-card-btn">View Details</a>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+function esc(value = '') {
+  return String(value).replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+}
 
-        container.innerHTML = html;
-    },
+function link(url, label, className = 'btn secondary') {
+  if (!url) return '';
+  return `<a class="${className}" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+}
 
-    renderBook(book, series) {
-        const container = document.getElementById('app-container');
+function cover(book, cls = '') {
+  if (!book?.cover) return `<div class="missing-cover">${esc(book?.number ? `Volume ${book.number}` : 'Cover')}<br>${esc(book?.status || '')}</div>`;
+  return `<img class="${cls}" src="${esc(book.cover)}" data-fallback="${esc(book.coverRemote || '')}" alt="${esc(book.title)} book cover" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback='';}else{this.remove()}">`;
+}
 
-        let retailerHtml = '';
-        if (book.retailers && book.retailers.length > 0) {
-            retailerHtml = `
-                <div class="retailer-list">
-                    ${book.retailers.map(r => `<a href="${r.url}" target="_blank" class="retailer-pill">${r.name}</a>`).join('')}
-                </div>
-            `;
-        } else {
-            retailerHtml = '<p>Coming Soon</p>';
-        }
+function buttons(book) {
+  return `<div class="cta-row">
+    <a class="btn primary" href="#/book/${esc(book.slug)}">Explore Book</a>
+    <button class="btn secondary" data-buy="${esc(book.slug)}">Buy Book</button>
+    ${book.excerpt ? `<a class="btn secondary" href="#/read/${esc(book.slug)}">Read Excerpt</a>` : ''}
+  </div>`;
+}
 
-        let accordionHtml = '';
-        if (book.excerpts && book.excerpts.length > 0) {
-            accordionHtml = `
-                <div style="margin-top: 1rem;">
-                    <a href="#/read/${book.slug}" class="btn btn-primary">Read Sample Chapters</a>
-                </div>
-                <div class="accordion">
-                    ${book.excerpts.map((excerpt, index) => `
-                        <div class="accordion-item">
-                            <button class="accordion-header" onclick="Renderer.toggleAccordion(this)">
-                                ${excerpt.title} <span>+</span>
-                            </button>
-                            <div class="accordion-content">
-                                <div class="excerpt-text">${excerpt.content}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
+function populateJump() {
+  const select = document.querySelector('#jumpBook');
+  if (!select || !DATA) return;
+  select.innerHTML = DATA.books.map(book => `<option value="${esc(book.slug)}">Book ${esc(book.number)} — ${esc(book.title)}</option>`).join('');
+  select.onchange = () => { if (select.value) location.hash = `#/book/${select.value}`; };
+}
 
-        const html = `
-            <div class="grid-2">
-                <div>
-                    <img src="${book.cover}" alt="${book.title}" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                </div>
-                <div>
-                    <h1>${book.title}</h1>
-                    <p style="color: var(--accent); margin-bottom: 1rem;">${series.title} - Volume ${book.volume}</p>
 
-                    <div style="background: var(--card-bg); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        <p><strong>Release Date:</strong> ${book.releaseDate}</p>
-                        <p><strong>ISBN:</strong> ${book.isbn}</p>
-                        <p><strong>Pages:</strong> ${book.pageCount}</p>
-                    </div>
+function applyHead(meta = {}, title = 'Eyes of Fire') {
+  document.title = meta.title || title;
+  const description = meta.description || DATA?.series?.description || '';
+  let tag = document.querySelector('meta[name="description"]');
+  if (!tag) { tag = document.createElement('meta'); tag.name = 'description'; document.head.appendChild(tag); }
+  tag.content = description;
 
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">${book.blurb}</p>
+  if (meta.ogTitle) document.querySelector('meta[property="og:title"]')?.setAttribute('content', meta.ogTitle);
+  if (meta.ogDescription) document.querySelector('meta[property="og:description"]')?.setAttribute('content', meta.ogDescription);
+  if (meta.ogImage) document.querySelector('meta[property="og:image"]')?.setAttribute('content', meta.ogImage);
+}
 
-                    <h3>Get It Now</h3>
-                    ${retailerHtml}
+function renderBlocks(blocks = []) {
+  return blocks.map(block => {
+    const type = block.type || 'text';
+    if (type === 'hero') return `<section class="hero page-hero"><div class="hero-copy"><span class="eyebrow">${esc(block.eyebrow || '')}</span><h1>${esc(block.title || '')}</h1><p class="subtitle">${esc(block.subtitle || '')}</p><p class="hero-description">${esc(block.text || '')}</p>${renderActions(block.actions)}</div>${block.image ? `<div class="hero-panel"><div class="cover-stage"><div class="cover-frame"><img src="${esc(block.image)}" alt="${esc(block.imageAlt || block.title || '')}"></div></div></div>` : ''}</section>`;
+    if (type === 'heading') return `<section class="section"><div class="section-heading"><div><span class="eyebrow">${esc(block.eyebrow || '')}</span><h2>${esc(block.title || '')}</h2></div>${block.text ? `<p>${esc(block.text)}</p>` : ''}</div></section>`;
+    if (type === 'text') return `<section class="section"><div class="prose-card"><span class="eyebrow">${esc(block.eyebrow || '')}</span>${block.title ? `<h2>${esc(block.title)}</h2>` : ''}${paragraphs(block.text || block.content)}</div></section>`;
+    if (type === 'quote') return `<section class="section"><blockquote class="feature-quote">${esc(block.text || '')}${block.credit ? `<cite>— ${esc(block.credit)}</cite>` : ''}</blockquote></section>`;
+    if (type === 'cards') return `<section class="section"><div class="section-heading"><div><span class="eyebrow">${esc(block.eyebrow || '')}</span><h2>${esc(block.title || '')}</h2></div></div><div class="book-grid generic-cards">${(block.items || []).map(item => `<article class="book-card"><div class="book-card-body"><span class="status">${esc(item.label || '')}</span><h3>${esc(item.title || '')}</h3><p>${esc(item.text || '')}</p>${renderActions(item.actions)}</div></article>`).join('')}</div></section>`;
+    if (type === 'image') return `<section class="section image-section"><img src="${esc(block.src || '')}" alt="${esc(block.alt || '')}">${block.caption ? `<p class="image-caption">${esc(block.caption)}</p>` : ''}</section>`;
+    return `<section class="section"><div class="prose-card">${paragraphs(block.content || block.text || '')}</div></section>`;
+  }).join('');
+}
 
-                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                        ${book.goodreads ? `<a href="${book.goodreads}" target="_blank" class="btn btn-secondary">Goodreads</a>` : ''}
-                        ${book.bookbub ? `<a href="${book.bookbub}" target="_blank" class="btn btn-secondary">BookBub</a>` : ''}
-                    </div>
+function paragraphs(text = '') {
+  return String(text).split(/\n\n+/).filter(Boolean).map(p => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`).join('');
+}
 
-                    ${accordionHtml}
-                </div>
-            </div>
-        `;
+function renderActions(actions = []) {
+  if (!Array.isArray(actions)) return '';
+  return `<div class="cta-row">${actions.map(action => {
+    if (action.route) return `<a class="btn ${esc(action.style || 'secondary')}" href="${esc(action.route)}">${esc(action.label)}</a>`;
+    return link(action.url, action.label, action.style || 'secondary');
+  }).join('')}</div>`;
+}
 
-        container.innerHTML = html;
-    },
+export function renderHome() {
+  const { series, books } = DATA;
+  const book = books[0];
+  document.querySelector('#app').innerHTML = `
+<section class="hero"><div class="hero-copy"><span class="eyebrow">${esc(series.title)} · Book ${esc(book.number)}</span><h1>${esc(book.title)}</h1><p class="subtitle">${esc(book.subtitle)}</p><p class="tagline">${esc(book.tagline)}</p><p class="hero-description">${esc(book.synopsis)}</p>${buttons(book)}</div><div class="hero-panel"><div class="cover-stage"><div class="cover-frame">${cover(book)}</div></div></div></section>
+<section class="section"><div class="section-heading"><div><span class="eyebrow">Browse the series</span><h2>Choose your way in.</h2></div><p>Follow the story in order, open a book directly, or step into a sample without leaving the site.</p></div><div class="browse"><span class="pill active">Series</span>${(series.genres || []).map(g => `<span class="pill">${esc(g)}</span>`).join('')}</div></section>
+<section class="section"><div class="section-heading"><div><span class="eyebrow">Reading order</span><h2>The series</h2></div></div><div class="book-grid">${books.map(bookCard).join('')}</div></section>
+<section class="section"><div class="section-heading"><div><span class="eyebrow">The world</span><h2>A legend split by time.</h2></div></div><div class="lore-grid"><article class="lore-card"><h3>THE FRACTURE</h3><p>${esc(series.lore || '')}</p></article><article class="lore-card"><h3>THE WOMAN WITH THE EYES OF FIRE</h3><p>${esc(series.world || '')}</p></article></div></section>`;
+  wireBuy();
+  applyHead(series.seo, series.title);
+  updateSchema({ series, book, site: DATA.site, route: { kind: 'home', path: '#/' } });
+  setAudio(book);
+}
 
-    toggleAccordion(btn) {
-        const content = btn.nextElementSibling;
-        const icon = btn.querySelector('span');
+function bookCard(book) {
+  return `<article class="book-card"><div class="book-card-cover">${cover(book)}</div><div class="book-card-body"><span class="status ${book.status !== 'Available Now' ? 'future' : ''}">${esc(book.status)}</span><h3>Book ${esc(book.number)}: ${esc(book.title)}</h3><p>${esc(book.tagline || '')}</p><a class="btn secondary" href="#/book/${esc(book.slug)}">View book</a></div></article>`;
+}
 
-        if (content.classList.contains('active')) {
-            content.classList.remove('active');
-            icon.textContent = '+';
-        } else {
-            // Close others
-            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.accordion-header span').forEach(s => s.textContent = '+');
+export function renderBook(book) {
+  const { series } = DATA;
+  document.querySelector('#app').innerHTML = `<section class="section"><a class="eyebrow" href="#/">← Back to series</a><div class="detail-grid" style="margin-top:24px"><div class="cover-stage"><div class="cover-frame">${cover(book)}</div></div><div class="detail-copy"><span class="status ${book.status !== 'Available Now' ? 'future' : ''}">${esc(book.status)}</span><h1>${esc(book.title)}</h1><h2>${esc(book.subtitle || '')}</h2><p>${esc(book.synopsis || '')}</p><div class="spec-grid"><div class="spec"><small>Format</small><strong>${esc(book.format || 'TBA')}</strong></div><div class="spec"><small>ISBN</small><strong>${esc(book.isbn || 'TBA')}</strong></div><div class="spec"><small>Pages</small><strong>${esc(book.pages || 'TBA')}</strong></div><div class="spec"><small>Series</small><strong>Book ${esc(book.number)} of ${esc(DATA.books.length)}</strong></div></div>${buttons(book)}</div></div></section>
+<section class="section"><div class="section-heading"><div><span class="eyebrow">Purchase</span><h2>Choose a retailer.</h2></div></div><div class="retailer-grid">${(book.retailers || []).map(r => `<a class="retailer" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>`).join('') || '<p>No retailer links yet.</p>'}</div></section>
+${book.excerpt ? `<section class="section"><div class="section-heading"><div><span class="eyebrow">Sample</span><h2>${esc(book.excerptTitle || 'Excerpt')}</h2></div></div><div class="reader-card">${paragraphs(book.excerpt.split('\n\n').slice(0,4).join('\n\n'))}<div class="cta-row"><a class="btn primary" href="#/read/${esc(book.slug)}">Open full sample reader</a></div></div></section>` : ''}`;
+  wireBuy();
+  applyHead(book.seo, `${book.title} — ${series.title}`);
+  updateSchema({ series, book, site: DATA.site, route: { kind: 'book', slug: book.slug, path: `#/book/${book.slug}` } });
+  setAudio(book);
+}
 
-            content.classList.add('active');
-            icon.textContent = '-';
-        }
-    },
+export function renderPage(page) {
+  const { series } = DATA;
+  document.querySelector('#app').innerHTML = `<div class="page-wrap">${renderBlocks(page.blocks || [])}</div>`;
+  applyHead(page.seo, `${page.title} — ${series.title}`);
+  updateSchema({ series, page, site: DATA.site, route: { kind: 'page', slug: page.slug, path: `#/page/${page.slug}` } });
+  setAudio(null);
+}
 
-    renderReader(book) {
-        const container = document.getElementById('app-container');
+export function renderReader(book) {
+  const { series } = DATA;
+  document.querySelector('#app').innerHTML = `<section class="section"><a class="eyebrow" href="#/book/${esc(book.slug)}">← Back to book</a><div class="detail-grid" style="margin-top:24px"><div class="cover-stage"><div class="cover-frame">${cover(book)}</div></div><div class="detail-copy"><span class="status">Excerpt</span><h1>${esc(book.title)}</h1><h2>${esc(book.excerptTitle || 'Excerpt')}</h2></div></div></section>
+<section class="section"><div class="reader-card" style="margin-top:24px;">${paragraphs(book.excerpt)}<div class="cta-row"><button class="btn secondary" data-buy="${esc(book.slug)}">Buy Book</button></div></div></section>`;
+  wireBuy();
+  applyHead(book.seo, `Read Excerpt: ${book.title} — ${series.title}`);
+  updateSchema({ series, book, site: DATA.site, route: { kind: 'read', slug: book.slug, path: `#/read/${book.slug}` } });
+  setAudio(book);
+}
 
-        let excerptsHtml = '';
-        if (book.excerpts && book.excerpts.length > 0) {
-            excerptsHtml = book.excerpts.map(excerpt => `
-                <h2>${excerpt.title}</h2>
-                <div class="excerpt-body">${excerpt.content}</div>
-                <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #555;">
-            `).join('');
-        } else {
-            excerptsHtml = '<p>No samples available for this book.</p>';
-        }
 
-        const html = `
-            <div id="reader-modal" class="reader-modal">
-                <div class="reader-header">
-                    <h2>Reading: ${book.title}</h2>
-                    <div class="reader-controls">
-                        <button onclick="Renderer.changeFontSize(-1)">A-</button>
-                        <button onclick="Renderer.changeFontSize(1)">A+</button>
-                        <button onclick="Renderer.toggleTheme()">🌓 Theme</button>
-                        <a href="#/book/${book.slug}" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Close</a>
-                    </div>
-                </div>
-                <div class="reader-content" id="reader-content">
-                    ${excerptsHtml}
+function wireBuy() {
+  document.querySelectorAll('[data-buy]').forEach(button => {
+    button.onclick = () => openBuy(DATA.books.find(book => book.slug === button.dataset.buy));
+  });
+}
 
-                    <div class="reader-purchase-banner">
-                        <h3>Enjoyed the sample?</h3>
-                        <p>Get the full book now.</p>
-                        <div class="action-pills" style="justify-content: center;">
-                            ${book.retailers ? book.retailers.map(r => `<a href="${r.url}" target="_blank" class="retailer-pill">${r.name}</a>`).join('') : ''}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+function openBuy(book) {
+  if (!book) return;
+  const root = document.querySelector('#modalRoot');
+  root.innerHTML = `<div class="buy-modal"><div class="buy-modal-card"><div class="buy-modal-head"><div><span class="eyebrow">Buy Book ${esc(book.number)}</span><h2>${esc(book.title)}</h2><p>Choose a direct retailer.</p></div><button class="close" id="closeBuy">×</button></div><div class="modal-retailers">${(book.retailers || []).map(r => `<a href="${esc(r.url)}" target="_blank" rel="noopener"><strong>${esc(r.name)}</strong><small>Open retailer</small></a>`).join('') || '<p>No retailer links yet.</p>'}</div></div></div>`;
+  document.querySelector('#closeBuy').onclick = () => root.innerHTML = '';
+}
 
-        container.innerHTML = html;
-
-        // initialize default font size state
-        this.currentFontSize = 1.2;
-    },
-
-    changeFontSize(delta) {
-        this.currentFontSize += (delta * 0.1);
-        if (this.currentFontSize < 0.8) this.currentFontSize = 0.8;
-        if (this.currentFontSize > 2.5) this.currentFontSize = 2.5;
-
-        const content = document.getElementById('reader-content');
-        if (content) {
-            content.style.fontSize = `${this.currentFontSize}rem`;
-        }
-    },
-
-    toggleTheme() {
-        const modal = document.getElementById('reader-modal');
-        if (modal) {
-            modal.classList.toggle('light-mode');
-        }
-    }
-};
+export function updatePageTitle(kind, item) {
+  document.title = kind === 'home' ? (DATA.series.seo?.title || DATA.series.title) : `${item.title} — ${DATA.series.title}`;
+}

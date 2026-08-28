@@ -1,70 +1,165 @@
 {
+  "site": {
+    "name": "Eyes of Fire",
+    "baseUrl": "https://example.com/",
+    "logo": "assets/images/eyes-of-fire-logo.png"
+  },
   "series": {
-    "title": "Eyes Of Fire Series",
-    "author": "Malik A. Ahmed",
-    "authorWebsite": "https://example.com/author",
-    "lore": "Area 51 underground experiments, time fracture to medieval 1400s Italy, the stitched leather mask, and the legend of the woman with burning eyes.",
-    "description": "An epic series following a woman with burning eyes.",
-    "url": "https://example.com/eyes-of-fire-series"
+    "title": "Eyes of Fire",
+    "tagline": "Betrayed. Silenced. Transformed.",
+    "description": "A dark science-fiction, historical-fantasy and psychological suspense saga built around secret experiments, a fracture in time, and the legend of a woman with burning eyes.",
+    "lore": "Beneath Area 51, a secret experiment reaches beyond the limits of science. When the experiment tears time open, Victoria Stevens is thrown into 1400s Italy — altered, masked, and feared as the Woman with the Eyes of Fire. The fracture is not simply a doorway through history; it may be rewriting history itself.",
+    "world": "Science gives way to impossible history. A woman who was treated as an experiment becomes a figure feared, remembered, and perhaps destined to change the past.",
+    "genres": [
+      "Dark Fantasy",
+      "Psychological Suspense",
+      "Science Fiction",
+      "Historical Fantasy",
+      "Thriller"
+    ],
+    "seo": {
+      "title": "Eyes of Fire",
+      "description": "The official Eyes of Fire series hub."
+    }
   },
   "books": [
     {
-      "id": "book-1",
       "slug": "the-woman-of-fire",
-      "title": "THE WOMAN OF FIRE (EYES OF FIRE BOOK 1)",
-      "volume": 1,
-      "tagline": "The People I Left",
-      "cover": "assets/images/covers/book1-cover.png",
-      "releaseDate": "2023-01-01",
-      "isbn": "978-0000000000",
-      "pageCount": 350,
-      "blurb": "The people I left behind were never the people I thought they were.<br><br>I grew up believing that the first hands to hold me would be...",
+      "number": 1,
+      "title": "The Woman Of Fire",
+      "subtitle": "What’s Left in Me?",
+      "status": "Available Now",
+      "format": "Paperback",
+      "isbn": "9798193132844",
+      "asin": "B0HCLCFY7Z",
+      "pages": 343,
+      "datePublished": "2026-08-01",
+      "language": "en",
+      "cover": "https://res.cloudinary.com/wellfleet/image/upload/c_fill,f_auto,q_auto:good,w_860/8sjnw1mgwqv0u41ye8urspy48hbe",
+      "coverRemote": "https://res.cloudinary.com/wellfleet/image/upload/c_fill,f_auto,q_auto:good,w_860/8sjnw1mgwqv0u41ye8urspy48hbe",
+      "tagline": "Betrayed. Silenced. Transformed.",
+      "synopsis": "I often wonder what changed me more... the experiments, or the betrayal of the people I once called family. Sold to a secret facility beneath Area 51, I was sealed, rewritten, and broken. They believed they could erase who I was. They were wrong. When their final experiment tears time open, I awaken in 1400 — masked, altered, and feared as The Woman with the Eyes of Fire. Now history is mine to rewrite.",
+      "excerptTitle": "The People I Left",
+      "excerpt": "The People I Left\n\nThe people I left behind were never the people I thought they were.\n\nI grew up believing that the first hands to hold me would be the last hands to let me fall. They told me they would protect me with their lives. I believed them.\n\nUntil they sold me.\n\nThey gave me to people who saw me not as a daughter, not as a human being, but as something they could cut open, alter, and rebuild. Inside a place hidden from the world, they took my voice, rewrote my body, and slowly erased the girl I used to be.\n\nI remember the pain.\n\nI remember the silence.\n\nAnd most of all, I remember wondering why the people who promised to protect me were the ones who handed me over.\n\nI was twenty-one when they took me.\n\nI don't know how old I was when I stopped being the girl they sold.\n\nBut somewhere between the experiments, the blood, and the endless darkness, something inside me refused to disappear.\n\nMy name is Victoria Stevens.\n\nAnd this is the story of what they made me become.",
+      "spotify": "",
       "retailers": [
-        { "name": "Amazon US", "url": "https://amazon.com/" },
-        { "name": "Amazon UK", "url": "https://amazon.co.uk/" },
-        { "name": "Barnes & Noble", "url": "https://barnesandnoble.com/" },
-        { "name": "Walmart", "url": "https://walmart.com/" },
-        { "name": "Apple Books", "url": "https://apple.com/apple-books/" },
-        { "name": "Kobo", "url": "https://kobo.com/" }
-      ],
-      "goodreads": "https://goodreads.com/",
-      "bookbub": "https://bookbub.com/",
-      "audio": {
-        "platform": "spotify",
-        "uri": "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M",
-        "embedUrl": "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
-      },
-      "excerpts": [
         {
-          "title": "The People I Left",
-          "content": "<p>The metal walls of the bunker felt colder than usual...</p><p>Time was a fracture, an illusion I was about to break.</p>"
+          "name": "Amazon US",
+          "url": "https://www.amazon.com/dp/B0HCLCFY7Z"
         },
         {
-          "title": "What's Left in Me?",
-          "content": "<p>I opened my eyes and the world was burning.</p><p>Not with fire, but with a light that shouldn't exist in 1400s Italy.</p>"
+          "name": "Amazon UK",
+          "url": "https://www.amazon.co.uk/dp/B0HCLCFY7Z"
+        },
+        {
+          "name": "Amazon CA",
+          "url": "https://www.amazon.ca/dp/B0HCLCFY7Z"
         }
       ],
-      "status": "published"
+      "community": [
+        {
+          "name": "Goodreads",
+          "url": "https://www.goodreads.com/"
+        },
+        {
+          "name": "BookBub",
+          "url": "https://www.bookbub.com/"
+        }
+      ],
+      "seo": {
+        "title": "The Woman Of Fire — Eyes of Fire",
+        "description": "The Woman Of Fire, Book 1 of Eyes of Fire."
+      }
     },
     {
-      "id": "book-2",
-      "slug": "eyes-of-fire-book-2",
-      "title": "Eyes of Fire: Volume 2",
-      "volume": 2,
-      "tagline": "The legend continues.",
-      "cover": "https://via.placeholder.com/600x900/1a1a1a/cccccc?text=Book+2+(Coming+Soon)",
-      "releaseDate": "TBD",
-      "isbn": "TBD",
-      "pageCount": 0,
-      "blurb": "The next chapter in the Eyes of Fire series.",
+      "slug": "volume-two",
+      "number": 2,
+      "title": "Volume II",
+      "subtitle": "The story continues",
+      "status": "In Development",
+      "format": "TBA",
+      "isbn": "",
+      "asin": "",
+      "pages": null,
+      "datePublished": "",
+      "language": "en",
+      "cover": "",
+      "coverRemote": "",
+      "tagline": "The fracture is not finished.",
+      "synopsis": "The next installment of Eyes of Fire is in development.",
+      "excerpt": "",
+      "spotify": "",
       "retailers": [],
-      "audio": {
-        "platform": "spotify",
-        "uri": "",
-        "embedUrl": ""
+      "community": []
+    },
+    {
+      "slug": "volume-three",
+      "number": 3,
+      "title": "Volume III",
+      "subtitle": "A future legend",
+      "status": "In Development",
+      "format": "TBA",
+      "isbn": "",
+      "asin": "",
+      "pages": null,
+      "datePublished": "",
+      "language": "en",
+      "cover": "",
+      "coverRemote": "",
+      "tagline": "Some legends survive time.",
+      "synopsis": "A future installment of the Eyes of Fire series.",
+      "excerpt": "",
+      "spotify": "",
+      "retailers": [],
+      "community": []
+    }
+  ],
+  "pages": [
+    {
+      "slug": "the-world",
+      "title": "The World",
+      "seo": {
+        "title": "The World — Eyes of Fire",
+        "description": "Explore the world and mythology behind Eyes of Fire."
       },
-      "excerpts": [],
-      "status": "preorder"
+      "blocks": [
+        {
+          "type": "hero",
+          "eyebrow": "THE WORLD",
+          "title": "A legend split by time.",
+          "subtitle": "Science. Betrayal. 1400.",
+          "text": "A secret experiment reaches beyond the limits of science and opens a path into a world that was never meant to be touched.",
+          "actions": [
+            {
+              "label": "Read Book 1",
+              "route": "#/book/the-woman-of-fire",
+              "style": "primary"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "eyebrow": "THE FRACTURE",
+          "title": "Where the story begins",
+          "text": "Beneath Area 51, an experiment pushes past the boundary between what is known and what should remain impossible. Time fractures. A life is torn out of its era.\n\nWhat follows is not simply survival. It is transformation — and the beginning of a legend."
+        },
+        {
+          "type": "quote",
+          "text": "Some legends are born in history. Others are thrown into it.",
+          "credit": "Eyes of Fire"
+        }
+      ],
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{page.title}}",
+        "description": "{{page.seo.description}}",
+        "url": "{{site.baseUrl}}#/page/{{page.slug}}",
+        "isPartOf": {
+          "@type": "BookSeries",
+          "name": "{{series.title}}"
+        }
+      }
     }
   ]
 }

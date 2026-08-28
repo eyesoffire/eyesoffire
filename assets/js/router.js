@@ -1,135 +1,59 @@
-class Router {
-    constructor() {
-        this.routes = {
-            '/': this.renderHome.bind(this),
-            '/book/:slug': this.renderBook.bind(this),
-            '/read/:slug': this.renderRead.bind(this)
-        };
+import { setData, getData, renderHome, renderBook, renderPage, renderReader } from './render.js';
+import { setSchemaData } from './schema.js';
+import { initAudio } from './audio.js';
 
-        window.addEventListener('hashchange', this.handleRouteChange.bind(this));
+const DATA_URL = 'data/series.json';
 
-        // Initial load
-        this.loadData().then(() => {
-            this.handleRouteChange();
-            this.populateSeriesSelector();
-            if (window.AudioPlayer) {
-                window.AudioPlayer.init();
-            }
-        });
-    }
-
-    async loadData() {
-        try {
-            const response = await fetch('data/series.json');
-            this.data = await response.json();
-
-            // Set author website link
-            const authorLink = document.getElementById('author-website');
-            if (authorLink && this.data.series.authorWebsite) {
-                authorLink.href = this.data.series.authorWebsite;
-            }
-        } catch (error) {
-            console.error('Failed to load series data:', error);
-            document.getElementById('app-container').innerHTML = '<p>Error loading content.</p>';
-        }
-    }
-
-    populateSeriesSelector() {
-        const select = document.getElementById('series-selector');
-        this.data.books.forEach(book => {
-            const option = document.createElement('option');
-            option.value = `#/book/${book.slug}`;
-            option.textContent = `Book ${book.volume}: ${book.title}`;
-            select.appendChild(option);
-        });
-
-        select.addEventListener('change', (e) => {
-            if (e.target.value) {
-                window.location.hash = e.target.value;
-                e.target.value = ''; // Reset select
-            }
-        });
-    }
-
-    handleRouteChange() {
-        const path = window.location.hash.slice(1) || '/';
-        const appContainer = document.getElementById('app-container');
-        appContainer.innerHTML = '<div class="loader">Loading...</div>';
-
-        // Scroll to top
-        window.scrollTo(0, 0);
-
-        let matched = false;
-
-        for (const [route, handler] of Object.entries(this.routes)) {
-            const params = this.matchRoute(route, path);
-            if (params) {
-                handler(params);
-                matched = true;
-                break;
-            }
-        }
-
-        if (!matched) {
-            appContainer.innerHTML = '<h2>404 - Not Found</h2>';
-        }
-    }
-
-    matchRoute(routeTemplate, currentPath) {
-        if (routeTemplate === currentPath) return {};
-
-        const templateParts = routeTemplate.split('/');
-        const currentParts = currentPath.split('/');
-
-        if (templateParts.length !== currentParts.length) return null;
-
-        const params = {};
-        for (let i = 0; i < templateParts.length; i++) {
-            if (templateParts[i].startsWith(':')) {
-                const paramName = templateParts[i].slice(1);
-                params[paramName] = currentParts[i];
-            } else if (templateParts[i] !== currentParts[i]) {
-                return null;
-            }
-        }
-        return params;
-    }
-
-    renderHome() {
-        if (window.Renderer) {
-            window.Renderer.renderHome(this.data);
-            if (window.SchemaGenerator) {
-                window.SchemaGenerator.generateSeriesSchema(this.data);
-            }
-        }
-    }
-
-    renderBook(params) {
-        const book = this.data.books.find(b => b.slug === params.slug);
-        if (book && window.Renderer) {
-            window.Renderer.renderBook(book, this.data.series);
-            if (window.SchemaGenerator) {
-                window.SchemaGenerator.generateBookSchema(book, this.data.series);
-            }
-            if (window.AudioPlayer) {
-                window.AudioPlayer.updateTrack(book.audio);
-            }
-        } else {
-            document.getElementById('app-container').innerHTML = '<h2>Book Not Found</h2>';
-        }
-    }
-
-    renderRead(params) {
-        const book = this.data.books.find(b => b.slug === params.slug);
-        if (book && window.Renderer) {
-            window.Renderer.renderReader(book);
-        } else {
-            document.getElementById('app-container').innerHTML = '<h2>Book Not Found</h2>';
-        }
-    }
+async function boot() {
+  const [dataResponse, schemaResponse] = await Promise.all([
+    fetch(DATA_URL, { cache: 'no-cache' }),
+    fetch('data/schema.json', { cache: 'no-cache' })
+  ]);
+  if (!dataResponse.ok) throw new Error(`Could not load ${DATA_URL} (${dataResponse.status})`);
+  if (!schemaResponse.ok) throw new Error(`Could not load data/schema.json (${schemaResponse.status})`);
+  const [data, schemaData] = await Promise.all([dataResponse.json(), schemaResponse.json()]);
+  setData(data);
+  setSchemaData(schemaData);
+  initAudio();
+  route();
+  window.addEventListener('hashchange', route);
 }
 
-// Initialize router when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.appRouter = new Router();
+function parse() {
+  const raw = location.hash.replace(/^#\/?/, '');
+  const parts = raw.split('/').filter(Boolean);
+  if (!parts.length) return { kind: 'home' };
+  if (parts[0] === 'book' && parts[1]) return { kind: 'book', slug: parts[1] };
+  if (parts[0] === 'read' && parts[1]) return { kind: 'read', slug: parts[1] };
+  if (parts[0] === 'page' && parts[1]) return { kind: 'page', slug: parts[1] };
+  return { kind: 'home' };
+}
+
+function route() {
+  const routeInfo = parse();
+  const data = getData();
+  if (!data) return;
+
+  const book = data.books.find(item => item.slug === routeInfo.slug);
+  const page = (data.pages || []).find(item => item.slug === routeInfo.slug);
+
+  if (routeInfo.kind === 'home') {
+    renderHome();
+  } else if (routeInfo.kind === 'book' && book) {
+    renderBook(book);
+  } else if (routeInfo.kind === 'read' && book && book.excerpt) {
+    renderBook(book);
+    renderReader(book);
+  } else if (routeInfo.kind === 'page' && page) {
+    renderPage(page);
+  } else {
+    location.hash = '#/';
+    return;
+  }
+
+  document.querySelector('#app')?.focus({ preventScroll: true });
+}
+
+boot().catch(error => {
+  document.querySelector('#app').innerHTML = `<div class="section"><h1>Eyes of Fire</h1><p>Unable to load the series manifest.</p><pre>${String(error.message || error)}</pre></div>`;
 });
