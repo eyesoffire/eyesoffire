@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyes Of Fire Series</title>
+    <meta name="description" content="Betrayed. Silenced. Transformed. The Eyes Of Fire Series.">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+
+    <!-- JSON-LD Placeholder, dynamically updated -->
+    <script type="application/ld+json" id="schema-container">{}</script>
+</head>
+<body>
+
+    <!-- Persistent Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <h1 class="logo"><a href="#/">Eyes Of Fire Series</a></h1>
+            <nav class="main-nav">
+                <select id="series-selector" class="nav-select">
+                    <option value="">Select a Book...</option>
+                </select>
+                <a href="#" id="author-website" target="_blank" class="nav-link">Author Website</a>
+                <button id="toggle-audio-btn" class="nav-btn">🎵 Audio</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main id="app-container">
+        <div class="loader">Loading...</div>
+    </main>
+
+    <!-- Sticky Bottom Audio Dock -->
+    <aside id="audio-dock" class="audio-dock hidden">
+        <div class="audio-dock-header">
+            <span class="audio-title">Soundtrack</span>
+            <button id="close-audio-btn" class="close-btn">&times;</button>
+        </div>
+        <div id="audio-player-container" class="audio-content">
+            <!-- Spotify iframe injected here -->
+        </div>
+    </aside>
+
+    <footer class="site-footer">
+        <p>&copy; <span id="current-year"></span> Eyes Of Fire Series.</p>
+    </footer>
+
+    <!-- App Scripts -->
+    <script src="assets/js/audio.js"></script>
+    <script src="assets/js/schema.js"></script>
+    <script src="assets/js/render.js"></script>
+    <script src="assets/js/router.js"></script>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

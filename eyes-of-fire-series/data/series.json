@@ -1,0 +1,70 @@
+{
+  "series": {
+    "title": "Eyes Of Fire Series",
+    "author": "Malik A. Ahmed",
+    "authorWebsite": "https://example.com/author",
+    "lore": "Area 51 underground experiments, time fracture to medieval 1400s Italy, the stitched leather mask, and the legend of the woman with burning eyes.",
+    "description": "An epic series following a woman with burning eyes.",
+    "url": "https://example.com/eyes-of-fire-series"
+  },
+  "books": [
+    {
+      "id": "book-1",
+      "slug": "the-woman-of-fire",
+      "title": "THE WOMAN OF FIRE (EYES OF FIRE BOOK 1)",
+      "volume": 1,
+      "tagline": "The People I Left",
+      "cover": "assets/images/covers/book1-cover.png",
+      "releaseDate": "2023-01-01",
+      "isbn": "978-0000000000",
+      "pageCount": 350,
+      "blurb": "The people I left behind were never the people I thought they were.<br><br>I grew up believing that the first hands to hold me would be...",
+      "retailers": [
+        { "name": "Amazon US", "url": "https://amazon.com/" },
+        { "name": "Amazon UK", "url": "https://amazon.co.uk/" },
+        { "name": "Barnes & Noble", "url": "https://barnesandnoble.com/" },
+        { "name": "Walmart", "url": "https://walmart.com/" },
+        { "name": "Apple Books", "url": "https://apple.com/apple-books/" },
+        { "name": "Kobo", "url": "https://kobo.com/" }
+      ],
+      "goodreads": "https://goodreads.com/",
+      "bookbub": "https://bookbub.com/",
+      "audio": {
+        "platform": "spotify",
+        "uri": "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M",
+        "embedUrl": "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
+      },
+      "excerpts": [
+        {
+          "title": "The People I Left",
+          "content": "<p>The metal walls of the bunker felt colder than usual...</p><p>Time was a fracture, an illusion I was about to break.</p>"
+        },
+        {
+          "title": "What's Left in Me?",
+          "content": "<p>I opened my eyes and the world was burning.</p><p>Not with fire, but with a light that shouldn't exist in 1400s Italy.</p>"
+        }
+      ],
+      "status": "published"
+    },
+    {
+      "id": "book-2",
+      "slug": "eyes-of-fire-book-2",
+      "title": "Eyes of Fire: Volume 2",
+      "volume": 2,
+      "tagline": "The legend continues.",
+      "cover": "https://via.placeholder.com/600x900/1a1a1a/cccccc?text=Book+2+(Coming+Soon)",
+      "releaseDate": "TBD",
+      "isbn": "TBD",
+      "pageCount": 0,
+      "blurb": "The next chapter in the Eyes of Fire series.",
+      "retailers": [],
+      "audio": {
+        "platform": "spotify",
+        "uri": "",
+        "embedUrl": ""
+      },
+      "excerpts": [],
+      "status": "preorder"
+    }
+  ]
+}
