@@ -1,34 +1,46 @@
-window.SchemaGenerator = {
-    inject(schemaObj) {
+const SchemaManager = {
+    inject(schemaData) {
+        let script = document.getElementById('schema-container');
+        if (!script) {
+            script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = 'schema-container';
+            document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify(schemaData, null, 2);
+    },
+
+    clear() {
         const script = document.getElementById('schema-container');
         if (script) {
-            script.textContent = JSON.stringify(schemaObj, null, 2);
+            script.textContent = '{}';
         }
     },
 
-    generateSeriesSchema(data) {
+    buildSeries(data) {
+        this.clear();
         const schema = {
             "@context": "https://schema.org",
             "@type": "BookSeries",
             "name": data.series.title,
             "description": data.series.description,
-            "url": data.series.url,
             "author": {
                 "@type": "Person",
                 "name": data.series.author,
                 "url": data.series.authorWebsite
             },
-            "hasPart": data.books.map(book => ({
+            "numberOfVolumes": data.books.length,
+            "hasPart": data.books.map(b => ({
                 "@type": "Book",
-                "name": book.title,
-                "bookEdition": book.volume.toString(),
-                "url": `${data.series.url}#/book/${book.slug}`
+                "name": b.title,
+                "url": window.location.origin + window.location.pathname + "#/book/" + b.slug
             }))
         };
         this.inject(schema);
     },
 
-    generateBookSchema(book, series) {
+    buildBook(book, series) {
+        this.clear();
         const schema = {
             "@context": "https://schema.org",
             "@type": "Book",
@@ -38,19 +50,18 @@ window.SchemaGenerator = {
                 "name": series.author,
                 "url": series.authorWebsite
             },
-            "url": `${series.url}#/book/${book.slug}`,
+            "url": window.location.origin + window.location.pathname + "#/book/" + book.slug,
             "image": book.cover,
-            "description": book.blurb,
-            "isbn": book.isbn !== "TBD" ? book.isbn : undefined,
-            "numberOfPages": book.pageCount > 0 ? book.pageCount : undefined,
-            "datePublished": book.releaseDate !== "TBD" ? book.releaseDate : undefined,
-            "bookEdition": book.volume.toString(),
+            "inLanguage": "en",
             "isPartOf": {
                 "@type": "BookSeries",
-                "name": series.title,
-                "url": series.url
+                "name": series.title
             }
         };
+
+        if (book.isbn && book.isbn !== 'TBD') schema.isbn = book.isbn;
+        if (book.pageCount) schema.numberOfPages = book.pageCount;
+        if (book.releaseDate && book.releaseDate !== 'TBD') schema.datePublished = book.releaseDate;
 
         if (book.retailers && book.retailers.length > 0) {
             schema.offers = {
@@ -69,3 +80,5 @@ window.SchemaGenerator = {
         this.inject(schema);
     }
 };
+
+window.SchemaManager = SchemaManager;

@@ -1,13 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
 :root {
-    --bg-color: #121212;
-    --text-main: #e0e0e0;
-    --text-muted: #a0a0a0;
-    --accent: #ff4500;
-    --accent-hover: #e03e00;
-    --card-bg: #1e1e1e;
-    --border: #333333;
-    --font-heading: 'Georgia', serif;
-    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --bg-core: #0B0C10;
+    --bg-vignette: #12141D;
+    --accent-orange: #E85A2D;
+    --accent-crimson: #C0392B;
+    --text-primary: #FFFFFF;
+    --text-secondary: #AAAAAA;
+    --glass-bg: rgba(22, 26, 35, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --font-ui: 'Inter', system-ui, sans-serif;
+    --font-heading: 'Cinzel', serif;
 }
 
 * {
@@ -17,39 +20,28 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    font-family: var(--font-body);
+    background: radial-gradient(circle at top, var(--bg-vignette), var(--bg-core));
+    background-color: var(--bg-core);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    font-weight: normal;
-    color: #ffffff;
-    margin-bottom: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 a {
-    color: var(--accent);
+    color: var(--accent-orange);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.3s ease;
 }
 
 a:hover {
-    color: var(--accent-hover);
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-
-.loader {
-    text-align: center;
-    padding: 3rem;
-    font-size: 1.2rem;
-    color: var(--text-muted);
+    color: var(--accent-crimson);
 }

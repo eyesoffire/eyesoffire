@@ -3,59 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eyes Of Fire Series</title>
-    <meta name="description" content="Betrayed. Silenced. Transformed. The Eyes Of Fire Series.">
+    <title>Eyes of Fire Series</title>
+    <meta name="description" content="An epic dark sci-fi and historical fantasy crossover series.">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/components.css">
-
-    <!-- JSON-LD Placeholder, dynamically updated -->
-    <script type="application/ld+json" id="schema-container">{}</script>
+    <script type="application/ld+json" id="schema-container"></script>
 </head>
 <body>
-
-    <!-- Persistent Header -->
     <header class="site-header">
-        <div class="header-container">
-            <h1 class="logo"><a href="#/">Eyes Of Fire Series</a></h1>
-            <nav class="main-nav">
-                <select id="series-selector" class="nav-select">
-                    <option value="">Select a Book...</option>
+        <div class="header-content">
+            <a href="#/" class="logo">Eyes of Fire</a>
+            <nav class="header-nav">
+                <select id="jump-to-book">
+                    <option value="">Jump to Book...</option>
                 </select>
-                <a href="#" id="author-website" target="_blank" class="nav-link">Author Website</a>
-                <button id="toggle-audio-btn" class="nav-btn">🎵 Audio</button>
+                <button id="audio-toggle" class="audio-toggle-btn">🎵 Soundtrack</button>
+                <a href="#" id="author-link" target="_blank" rel="noopener noreferrer">Author Website</a>
             </nav>
         </div>
     </header>
 
-    <!-- Main Dynamic Content Container -->
-    <main id="app-container">
-        <div class="loader">Loading...</div>
-    </main>
+    <main id="app-root"></main>
 
-    <!-- Sticky Bottom Audio Dock -->
     <aside id="audio-dock" class="audio-dock hidden">
-        <div class="audio-dock-header">
-            <span class="audio-title">Soundtrack</span>
-            <button id="close-audio-btn" class="close-btn">&times;</button>
+        <div class="audio-header">
+            <span class="audio-title">Atmospheric Soundtrack</span>
+            <button id="close-audio" class="close-audio-btn">&times;</button>
         </div>
-        <div id="audio-player-container" class="audio-content">
-            <!-- Spotify iframe injected here -->
+        <div class="audio-visualizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
+        <div id="spotify-player-container"></div>
     </aside>
 
-    <footer class="site-footer">
-        <p>&copy; <span id="current-year"></span> Eyes Of Fire Series.</p>
-    </footer>
+    <div id="retailer-modal" class="modal hidden">
+        <div class="modal-content glassmorphism">
+            <span class="close-modal">&times;</span>
+            <h2>Get the Book</h2>
+            <div id="retailer-links" class="retailer-grid"></div>
+        </div>
+    </div>
 
-    <!-- App Scripts -->
     <script src="assets/js/audio.js"></script>
     <script src="assets/js/schema.js"></script>
     <script src="assets/js/render.js"></script>
     <script src="assets/js/router.js"></script>
-
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
 </body>
 </html>
