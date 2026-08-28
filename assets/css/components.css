@@ -1,379 +1,252 @@
+/* Glassmorphism & Cards */
+.glassmorphism {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.card {
+    padding: 30px;
+}
+
+/* 3D Cover Treatment */
+.book-cover {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 0 0 25px rgba(232,90,45,0.2);
+    transition: transform 0.5s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+.book-cover:hover {
+    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg) scale(1.02);
+}
+
 /* Buttons */
 .btn {
     display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px; /* Less rounded as per image */
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-crimson));
+    color: white;
     border: none;
-    transition: background-color 0.2s, transform 0.1s;
-    font-family: var(--font-heading);
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
-.btn:active {
-    transform: scale(0.98);
+
+.btn:hover {
+    box-shadow: 0 0 15px rgba(232, 90, 45, 0.5);
+    transform: translateY(-2px);
+    color: white;
 }
-.btn-primary {
-    background-color: #c0392b; /* Match image red */
-    color: #fff;
-}
-.btn-primary:hover {
-    background-color: #a93226;
-    color: #fff;
-}
+
 .btn-secondary {
-    background-color: transparent;
-    border: 1px solid #555;
-    color: #fff;
+    background: transparent;
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange);
 }
+
 .btn-secondary:hover {
-    border-color: #fff;
-    color: #fff;
+    background: rgba(232, 90, 45, 0.1);
 }
 
-/* Hero Spotlight */
-.hero-spotlight {
-    display: flex;
-    flex-direction: column-reverse; /* Stack with image on top for mobile */
-    gap: 2rem;
-    margin-bottom: 4rem;
-    background-color: #0d0d0d; /* Dark background from image */
-    padding: 3rem 2rem;
-    border-radius: 0; /* No border radius */
-    border: none; /* Remove border */
-    /* Add subtle background gradient matching the image's moody lighting */
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1515 100%);
-    position: relative;
-    overflow: hidden;
+/* Pill Links */
+.pill-link {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
-/* Simulated blurred background behind hero */
-.hero-spotlight::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background-image: url('../images/covers/book1-cover.png');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.15; /* Very faint */
-    filter: blur(20px);
-    z-index: 0;
-    pointer-events: none;
+.pill-link:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-
-@media(min-width: 768px) {
-    .hero-spotlight {
-        flex-direction: row; /* Content left, image right */
-        align-items: center;
-        justify-content: space-between;
-        padding: 4rem;
-    }
-}
-.hero-cover {
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 400px; /* Match large image size */
-    z-index: 1;
-}
-@media(min-width: 768px) {
-    .hero-cover {
-         width: 45%;
-    }
-}
-.hero-cover img {
-    border-radius: 4px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8); /* Deeper shadow */
-    width: 100%;
-    border: 1px solid #332b2b; /* Subtle border matching the dark red tone */
-}
-.hero-content {
-    flex: 1;
-    z-index: 1;
-}
-.hero-content h1 {
-    font-size: 3.5rem;
-    line-height: 1.1;
-    text-transform: uppercase;
-    font-family: 'Impact', 'Arial Black', sans-serif; /* Try to match the bold condensed font */
-    margin-bottom: 1.5rem;
-    letter-spacing: -1px;
-}
-.hero-tagline {
-    font-size: 1.4rem;
-    font-style: normal;
-    font-family: var(--font-heading);
-    color: #e0e0e0;
-    margin-bottom: 1.5rem;
-}
-.hero-content p {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    color: #cccccc;
+/* Retailer Grid */
+.retailer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.action-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 2rem;
-    align-items: center;
-}
-
-/* Series Lore */
-.series-lore {
-    margin-bottom: 4rem;
-    padding: 2rem;
-    border-left: 4px solid var(--accent);
-    background-color: rgba(255, 69, 0, 0.05);
-}
-.series-lore h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-/* Book Cards */
-.book-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s;
-    display: flex;
-    flex-direction: column;
-}
-.book-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-}
-.book-card-cover img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-}
-.book-card-content {
-    padding: 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-.book-card-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-}
-.book-card-status {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-}
-.book-card-btn {
-    margin-top: auto;
+.retailer-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px;
     text-align: center;
-    padding: 0.5rem;
-    background-color: #333;
-    color: #fff;
-    border-radius: 4px;
-}
-.book-card-btn:hover {
-    background-color: var(--accent);
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
 }
 
-/* Retailer Pills */
-.retailer-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0;
-}
-.retailer-pill {
-    padding: 0.4rem 0.8rem;
-    background-color: #333;
-    color: #fff;
-    border-radius: 15px;
-    font-size: 0.9rem;
-}
-.retailer-pill:hover {
-    background-color: var(--accent);
-}
-
-/* Accordion */
-.accordion {
-    margin-top: 2rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-}
-.accordion-item {
-    border-bottom: 1px solid var(--border);
-}
-.accordion-item:last-child {
-    border-bottom: none;
-}
-.accordion-header {
-    width: 100%;
-    text-align: left;
-    padding: 1rem;
-    background: var(--card-bg);
-    border: none;
-    color: #fff;
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-}
-.accordion-header:hover {
-    background: #2a2a2a;
-}
-.accordion-content {
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease;
-    background: #111;
-}
-.accordion-content.active {
-    padding: 1rem;
-    max-height: 1000px; /* arbitrary max for animation */
-}
-.excerpt-text {
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    line-height: 1.8;
+.retailer-btn:hover {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
 }
 
 /* Audio Dock */
 .audio-dock {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #181818;
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-    transform: translateY(0);
-    transition: transform 0.3s ease;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     z-index: 1000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
 .audio-dock.hidden {
-    transform: translateY(100%);
+    transform: translateY(150%);
+    opacity: 0;
 }
-.audio-dock-header {
+
+.audio-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-    background-color: #222;
-    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
 }
-.audio-title {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: var(--text-muted);
-}
-.close-btn {
+
+.close-audio-btn {
     background: none;
     border: none;
-    color: #fff;
+    color: white;
     font-size: 1.2rem;
     cursor: pointer;
 }
-.audio-content {
-    padding: 0;
-    height: 80px;
-}
-.audio-content iframe {
-    width: 100%;
-    height: 80px;
-    border: none;
+
+/* Visualizer (Simple CSS animation) */
+.audio-visualizer {
+    display: flex;
+    gap: 3px;
+    height: 15px;
+    align-items: flex-end;
+    margin-bottom: 10px;
 }
 
-/* Reader Modal */
-.reader-modal {
+.audio-visualizer .bar {
+    width: 4px;
+    background: var(--accent-orange);
+    animation: bounce 1s infinite alternate;
+}
+.audio-visualizer .bar:nth-child(2) { animation-delay: 0.2s; }
+.audio-visualizer .bar:nth-child(3) { animation-delay: 0.4s; }
+.audio-visualizer .bar:nth-child(4) { animation-delay: 0.1s; }
+
+@keyframes bounce {
+    0% { height: 20%; }
+    100% { height: 100%; }
+}
+
+/* Modal */
+.modal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #121212;
-    color: #e0e0e0;
-    z-index: 2000;
-    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
-.reader-modal.light-mode {
-    background-color: #ffffff;
-    color: #121212;
+.modal.hidden {
+    display: none;
 }
 
-.reader-modal.light-mode h1,
-.reader-modal.light-mode h2,
-.reader-modal.light-mode h3,
-.reader-modal.light-mode h4,
-.reader-modal.light-mode h5,
-.reader-modal.light-mode h6 {
-    color: #121212;
+.modal-content {
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Distraction-Free Reader */
+.reader-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #FAFAFA;
+    color: #333;
+    padding: 60px;
+    font-family: 'Georgia', serif;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    border-radius: 8px;
+    position: relative;
+}
+
+.reader-container.dark-mode {
+    background: #1A1A1A;
+    color: #E0E0E0;
 }
 
 .reader-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: rgba(0,0,0,0.8);
-    border-bottom: 1px solid #333;
-    position: sticky;
-    top: 0;
-    z-index: 2001;
-}
-.reader-modal.light-mode .reader-header {
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ddd;
-    color: #121212;
+    text-align: center;
+    margin-bottom: 40px;
 }
 
 .reader-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
 
 .reader-controls button {
-    background: #333;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    background: none;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
     cursor: pointer;
-}
-.reader-modal.light-mode .reader-controls button {
-    background: #ddd;
-    color: #121212;
+    border-radius: 4px;
+    margin-left: 5px;
 }
 
-.reader-content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 3rem 1rem;
-    font-family: var(--font-heading);
-    font-size: 1.2rem; /* default */
-    line-height: 1.8;
-}
-
-.reader-purchase-banner {
-    margin-top: 4rem;
-    padding: 2rem;
-    background-color: #1e1e1e;
+.sticky-buy-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--glass-bg);
+    padding: 15px;
     text-align: center;
-    border-radius: 8px;
-    border: 1px solid var(--accent);
+    border-top: 1px solid var(--glass-border);
+    margin-top: 40px;
 }
-.reader-modal.light-mode .reader-purchase-banner {
-    background-color: #f9f9f9;
+
+/* Hero Spotlight */
+.hero-spotlight {
+    background: linear-gradient(45deg, #2b0a0a, #0b0c10);
+    padding: 60px 40px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.hero-tagline {
+    color: var(--accent-orange);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }

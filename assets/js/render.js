@@ -1,206 +1,178 @@
-window.Renderer = {
+const Renderer = {
+    root: document.getElementById('app-root'),
+    modal: document.getElementById('retailer-modal'),
+    retailerLinksContainer: document.getElementById('retailer-links'),
+
+    init() {
+        const closeBtn = document.querySelector('.close-modal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.hideModal());
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.hideModal();
+            }
+        });
+    },
+
+    showModal(retailers) {
+        if (!this.modal || !this.retailerLinksContainer) return;
+
+        this.retailerLinksContainer.innerHTML = '';
+
+        if (retailers && retailers.length > 0) {
+            retailers.forEach(r => {
+                const a = document.createElement('a');
+                a.href = r.url;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                a.className = "retailer-btn";
+                a.textContent = r.name;
+                this.retailerLinksContainer.appendChild(a);
+            });
+        } else {
+            this.retailerLinksContainer.innerHTML = '<p>Not currently available for purchase.</p>';
+        }
+
+        this.modal.classList.remove('hidden');
+    },
+
+    hideModal() {
+        if (this.modal) this.modal.classList.add('hidden');
+    },
+
     renderHome(data) {
-        const container = document.getElementById('app-container');
-        const book1 = data.books.find(b => b.volume === 1);
+        const book1 = data.books[0];
 
-        let html = '';
-
-        // Hero Spotlight
-        if (book1) {
-            html += `
-                <section class="hero-spotlight">
-                    <div class="hero-content">
-                        <h1>${book1.title}</h1>
-                        <p class="hero-tagline">${book1.tagline}</p>
-                        <p>${book1.blurb}</p>
-                        <div class="action-pills">
-                            <a href="#/book/${book1.slug}" class="btn btn-primary" style="background-color: #c0392b; color: white;">Buy Now</a>
-                            <span style="color: white; margin: 0 10px; align-self: center;">or</span>
-                            <a href="#/read/${book1.slug}" class="btn btn-secondary">Learn More</a>
-                        </div>
+        let html = `
+            <div class="hero-spotlight grid-2-col">
+                <div>
+                    <h2 class="hero-tagline">${book1.tagline}</h2>
+                    <h1>${book1.title}</h1>
+                    <p>${book1.blurb.substring(0, 150)}...</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="window.Renderer.showModal(${JSON.stringify(book1.retailers).replace(/"/g, '&quot;')})">Buy Book</button>
+                        <a href="#/read/${book1.slug}" class="btn btn-secondary" style="margin-left: 10px;">Read Excerpt</a>
                     </div>
-                    <div class="hero-cover">
-                        <img src="${book1.cover}" alt="${book1.title} Cover">
+                    <div style="margin-top: 20px;">
+                        ${book1.bookbub ? `<a href="${book1.bookbub}" target="_blank" class="pill-link">Add to BookBub</a>` : ''}
+                        ${book1.goodreads ? `<a href="${book1.goodreads}" target="_blank" class="pill-link">Add to Goodreads</a>` : ''}
                     </div>
-                </section>
-            `;
-        }
+                </div>
+                <div>
+                    <a href="#/book/${book1.slug}">
+                        <img src="${book1.cover}" alt="${book1.title} Cover" class="book-cover">
+                    </a>
+                </div>
+            </div>
 
-        // Series Lore
-        html += `
-            <section class="series-lore">
-                <h2>The World of ${data.series.title}</h2>
-                <p>${data.series.lore}</p>
+            <section class="card glassmorphism" style="margin-bottom: 40px;">
+                <h2>Series Lore</h2>
+                <p style="font-size: 1.1rem; font-style: italic;">${data.series.lore}</p>
             </section>
+
+            <h2>Reading Order</h2>
+            <div class="grid-2-col" style="margin-top: 20px;">
         `;
 
-        // Books Grid
-        html += `
-            <h2>Series Reading Order</h2>
-            <div class="grid-auto">
-                ${data.books.sort((a, b) => a.volume - b.volume).map(book => `
-                    <div class="book-card">
-                        <div class="book-card-cover">
-                            <img src="${book.cover}" alt="${book.title}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3 class="book-card-title">Vol ${book.volume}: ${book.title}</h3>
-                            <span class="book-card-status">${book.status}</span>
-                            <a href="#/book/${book.slug}" class="book-card-btn">View Details</a>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+        data.books.forEach(b => {
+            html += `
+                <div class="card glassmorphism">
+                    <h3>${b.title}</h3>
+                    <p class="hero-tagline" style="font-size: 0.9rem;">${b.status}</p>
+                    <a href="#/book/${b.slug}" class="btn btn-secondary" style="margin-top: 15px; display: inline-block;">View Details</a>
+                </div>
+            `;
+        });
 
-        container.innerHTML = html;
+        html += `</div>`;
+        this.root.innerHTML = html;
+        window.scrollTo(0,0);
     },
 
-    renderBook(book, series) {
-        const container = document.getElementById('app-container');
-
-        let retailerHtml = '';
+    renderBook(book, seriesData) {
+        let retailersHtml = '';
         if (book.retailers && book.retailers.length > 0) {
-            retailerHtml = `
-                <div class="retailer-list">
-                    ${book.retailers.map(r => `<a href="${r.url}" target="_blank" class="retailer-pill">${r.name}</a>`).join('')}
-                </div>
-            `;
+            book.retailers.forEach(r => {
+                retailersHtml += `<a href="${r.url}" target="_blank" class="retailer-btn">${r.name}</a>`;
+            });
         } else {
-            retailerHtml = '<p>Coming Soon</p>';
+            retailersHtml = '<p>Pre-order coming soon.</p>';
         }
 
-        let accordionHtml = '';
-        if (book.excerpts && book.excerpts.length > 0) {
-            accordionHtml = `
-                <div style="margin-top: 1rem;">
-                    <a href="#/read/${book.slug}" class="btn btn-primary">Read Sample Chapters</a>
-                </div>
-                <div class="accordion">
-                    ${book.excerpts.map((excerpt, index) => `
-                        <div class="accordion-item">
-                            <button class="accordion-header" onclick="Renderer.toggleAccordion(this)">
-                                ${excerpt.title} <span>+</span>
-                            </button>
-                            <div class="accordion-content">
-                                <div class="excerpt-text">${excerpt.content}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        const html = `
-            <div class="grid-2">
+        let html = `
+            <div class="grid-2-col" style="margin-bottom: 40px;">
                 <div>
-                    <img src="${book.cover}" alt="${book.title}" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <img src="${book.cover}" alt="${book.title} Cover" class="book-cover">
                 </div>
-                <div>
+                <div class="card glassmorphism">
+                    <h2 class="hero-tagline">${book.chronology}</h2>
                     <h1>${book.title}</h1>
-                    <p style="color: var(--accent); margin-bottom: 1rem;">${series.title} - Volume ${book.volume}</p>
-
-                    <div style="background: var(--card-bg); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        <p><strong>Release Date:</strong> ${book.releaseDate}</p>
-                        <p><strong>ISBN:</strong> ${book.isbn}</p>
-                        <p><strong>Pages:</strong> ${book.pageCount}</p>
+                    <ul style="list-style: none; margin: 20px 0; color: var(--text-secondary);">
+                        <li><strong>Status:</strong> ${book.status}</li>
+                        <li><strong>Format:</strong> ${book.format || 'TBD'}</li>
+                        <li><strong>Pages:</strong> ${book.pageCount || 'TBD'}</li>
+                        <li><strong>ISBN:</strong> ${book.isbn || 'TBD'}</li>
+                        <li><strong>Release:</strong> ${book.releaseDate || 'TBD'}</li>
+                    </ul>
+                    <h3>Get the Book</h3>
+                    <div class="retailer-grid" style="margin-bottom: 20px;">
+                        ${retailersHtml}
                     </div>
+                    ${book.excerpts && book.excerpts.length > 0 ? `<a href="#/read/${book.slug}" class="btn">Read Excerpt</a>` : ''}
+                </div>
+            </div>
 
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">${book.blurb}</p>
-
-                    <h3>Get It Now</h3>
-                    ${retailerHtml}
-
-                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                        ${book.goodreads ? `<a href="${book.goodreads}" target="_blank" class="btn btn-secondary">Goodreads</a>` : ''}
-                        ${book.bookbub ? `<a href="${book.bookbub}" target="_blank" class="btn btn-secondary">BookBub</a>` : ''}
-                    </div>
-
-                    ${accordionHtml}
+            <div class="card glassmorphism">
+                <h2>Synopsis</h2>
+                <div style="margin-top: 20px; font-size: 1.1rem; line-height: 1.8;">
+                    ${book.blurb}
                 </div>
             </div>
         `;
-
-        container.innerHTML = html;
+        this.root.innerHTML = html;
+        window.scrollTo(0,0);
     },
 
-    toggleAccordion(btn) {
-        const content = btn.nextElementSibling;
-        const icon = btn.querySelector('span');
-
-        if (content.classList.contains('active')) {
-            content.classList.remove('active');
-            icon.textContent = '+';
-        } else {
-            // Close others
-            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.accordion-header span').forEach(s => s.textContent = '+');
-
-            content.classList.add('active');
-            icon.textContent = '-';
+    renderRead(book) {
+        if (!book.excerpts || book.excerpts.length === 0) {
+            this.root.innerHTML = `<div class="card glassmorphism"><h2>No excerpts available for this book.</h2><a href="#/book/${book.slug}" class="btn">Back to Book</a></div>`;
+            return;
         }
-    },
-
-    renderReader(book) {
-        const container = document.getElementById('app-container');
 
         let excerptsHtml = '';
-        if (book.excerpts && book.excerpts.length > 0) {
-            excerptsHtml = book.excerpts.map(excerpt => `
-                <h2>${excerpt.title}</h2>
-                <div class="excerpt-body">${excerpt.content}</div>
-                <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #555;">
-            `).join('');
-        } else {
-            excerptsHtml = '<p>No samples available for this book.</p>';
-        }
+        book.excerpts.forEach(ex => {
+            excerptsHtml += `
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">${ex.title}</h3>
+                <div>${ex.content}</div>
+            `;
+        });
 
         const html = `
-            <div id="reader-modal" class="reader-modal">
-                <div class="reader-header">
-                    <h2>Reading: ${book.title}</h2>
-                    <div class="reader-controls">
-                        <button onclick="Renderer.changeFontSize(-1)">A-</button>
-                        <button onclick="Renderer.changeFontSize(1)">A+</button>
-                        <button onclick="Renderer.toggleTheme()">🌓 Theme</button>
-                        <a href="#/book/${book.slug}" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Close</a>
-                    </div>
+            <div class="reader-container" id="reader-box">
+                <div class="reader-controls">
+                    <button onclick="document.getElementById('reader-box').style.fontSize='1rem'">A-</button>
+                    <button onclick="document.getElementById('reader-box').style.fontSize='1.5rem'">A+</button>
+                    <button onclick="document.getElementById('reader-box').classList.toggle('dark-mode')">🌓</button>
+                    <a href="#/book/${book.slug}" style="margin-left: 15px; color: inherit; text-decoration: underline;">Exit</a>
                 </div>
-                <div class="reader-content" id="reader-content">
-                    ${excerptsHtml}
+                <div class="reader-header">
+                    <h2>${book.title}</h2>
+                    <p style="font-style: italic;">Excerpt</p>
+                </div>
+                ${excerptsHtml}
 
-                    <div class="reader-purchase-banner">
-                        <h3>Enjoyed the sample?</h3>
-                        <p>Get the full book now.</p>
-                        <div class="action-pills" style="justify-content: center;">
-                            ${book.retailers ? book.retailers.map(r => `<a href="${r.url}" target="_blank" class="retailer-pill">${r.name}</a>`).join('') : ''}
-                        </div>
-                    </div>
+                <div class="sticky-buy-bar glassmorphism">
+                    <h3>End of Excerpt</h3>
+                    <p style="margin-bottom: 15px;">Enjoyed the sample? Get the full copy today.</p>
+                    <button class="btn" onclick="window.Renderer.showModal(${JSON.stringify(book.retailers).replace(/"/g, '&quot;')})">Buy Now</button>
                 </div>
             </div>
         `;
-
-        container.innerHTML = html;
-
-        // initialize default font size state
-        this.currentFontSize = 1.2;
-    },
-
-    changeFontSize(delta) {
-        this.currentFontSize += (delta * 0.1);
-        if (this.currentFontSize < 0.8) this.currentFontSize = 0.8;
-        if (this.currentFontSize > 2.5) this.currentFontSize = 2.5;
-
-        const content = document.getElementById('reader-content');
-        if (content) {
-            content.style.fontSize = `${this.currentFontSize}rem`;
-        }
-    },
-
-    toggleTheme() {
-        const modal = document.getElementById('reader-modal');
-        if (modal) {
-            modal.classList.toggle('light-mode');
-        }
+        this.root.innerHTML = html;
+        window.scrollTo(0,0);
     }
 };
+
+window.Renderer = Renderer;

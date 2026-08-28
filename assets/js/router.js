@@ -1,68 +1,62 @@
 class Router {
     constructor() {
         this.routes = {
-            '/': this.renderHome.bind(this),
-            '/book/:slug': this.renderBook.bind(this),
-            '/read/:slug': this.renderRead.bind(this)
+            '/': this.routeHome.bind(this),
+            '/book/:slug': this.routeBook.bind(this),
+            '/read/:slug': this.routeRead.bind(this)
         };
 
-        window.addEventListener('hashchange', this.handleRouteChange.bind(this));
-
-        // Initial load
-        this.loadData().then(() => {
-            this.handleRouteChange();
-            this.populateSeriesSelector();
-            if (window.AudioPlayer) {
-                window.AudioPlayer.init();
-            }
-        });
+        window.addEventListener('hashchange', this.handleRoute.bind(this));
     }
 
-    async loadData() {
+    async init() {
         try {
             const response = await fetch('data/series.json');
             this.data = await response.json();
 
-            // Set author website link
-            const authorLink = document.getElementById('author-website');
-            if (authorLink && this.data.series.authorWebsite) {
-                authorLink.href = this.data.series.authorWebsite;
-            }
-        } catch (error) {
-            console.error('Failed to load series data:', error);
-            document.getElementById('app-container').innerHTML = '<p>Error loading content.</p>';
+            this.populateNav();
+
+            if (window.AudioController) window.AudioController.init();
+            if (window.Renderer) window.Renderer.init();
+
+            this.handleRoute();
+        } catch (e) {
+            console.error("Failed to initialize:", e);
+            document.getElementById('app-root').innerHTML = '<h2 style="text-align:center;">Failed to load content.</h2>';
         }
     }
 
-    populateSeriesSelector() {
-        const select = document.getElementById('series-selector');
-        this.data.books.forEach(book => {
-            const option = document.createElement('option');
-            option.value = `#/book/${book.slug}`;
-            option.textContent = `Book ${book.volume}: ${book.title}`;
-            select.appendChild(option);
-        });
+    populateNav() {
+        const select = document.getElementById('jump-to-book');
+        const authorLink = document.getElementById('author-link');
 
-        select.addEventListener('change', (e) => {
-            if (e.target.value) {
-                window.location.hash = e.target.value;
-                e.target.value = ''; // Reset select
-            }
-        });
+        if (authorLink && this.data.series.authorWebsite) {
+            authorLink.href = this.data.series.authorWebsite;
+        }
+
+        if (select) {
+            this.data.books.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = `#/book/${b.slug}`;
+                opt.textContent = `${b.volume}. ${b.title}`;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener('change', (e) => {
+                if(e.target.value) {
+                    window.location.hash = e.target.value;
+                    e.target.value = '';
+                }
+            });
+        }
     }
 
-    handleRouteChange() {
+    handleRoute() {
         const path = window.location.hash.slice(1) || '/';
-        const appContainer = document.getElementById('app-container');
-        appContainer.innerHTML = '<div class="loader">Loading...</div>';
-
-        // Scroll to top
-        window.scrollTo(0, 0);
-
         let matched = false;
 
-        for (const [route, handler] of Object.entries(this.routes)) {
-            const params = this.matchRoute(route, path);
+        for (const [routePattern, handler] of Object.entries(this.routes)) {
+            const params = this.matchPattern(routePattern, path);
             if (params) {
                 handler(params);
                 matched = true;
@@ -71,65 +65,63 @@ class Router {
         }
 
         if (!matched) {
-            appContainer.innerHTML = '<h2>404 - Not Found</h2>';
+            document.getElementById('app-root').innerHTML = '<h2 style="text-align:center">404 - Not Found</h2>';
         }
     }
 
-    matchRoute(routeTemplate, currentPath) {
-        if (routeTemplate === currentPath) return {};
+    matchPattern(pattern, path) {
+        if (pattern === path) return {};
 
-        const templateParts = routeTemplate.split('/');
-        const currentParts = currentPath.split('/');
+        const patternParts = pattern.split('/');
+        const pathParts = path.split('/');
 
-        if (templateParts.length !== currentParts.length) return null;
+        if (patternParts.length !== pathParts.length) return null;
 
         const params = {};
-        for (let i = 0; i < templateParts.length; i++) {
-            if (templateParts[i].startsWith(':')) {
-                const paramName = templateParts[i].slice(1);
-                params[paramName] = currentParts[i];
-            } else if (templateParts[i] !== currentParts[i]) {
+        for(let i=0; i<patternParts.length; i++) {
+            if (patternParts[i].startsWith(':')) {
+                params[patternParts[i].substring(1)] = pathParts[i];
+            } else if (patternParts[i] !== pathParts[i]) {
                 return null;
             }
         }
         return params;
     }
 
-    renderHome() {
-        if (window.Renderer) {
-            window.Renderer.renderHome(this.data);
-            if (window.SchemaGenerator) {
-                window.SchemaGenerator.generateSeriesSchema(this.data);
-            }
+    routeHome() {
+        if (window.Renderer) window.Renderer.renderHome(this.data);
+        if (window.SchemaManager) window.SchemaManager.buildSeries(this.data);
+
+        // Load default audio (first book)
+        if (window.AudioController && this.data.books.length > 0) {
+             window.AudioController.loadTrack(this.data.books[0].audio);
         }
     }
 
-    renderBook(params) {
+    routeBook(params) {
         const book = this.data.books.find(b => b.slug === params.slug);
-        if (book && window.Renderer) {
-            window.Renderer.renderBook(book, this.data.series);
-            if (window.SchemaGenerator) {
-                window.SchemaGenerator.generateBookSchema(book, this.data.series);
-            }
-            if (window.AudioPlayer) {
-                window.AudioPlayer.updateTrack(book.audio);
-            }
+        if (book) {
+            if (window.Renderer) window.Renderer.renderBook(book, this.data.series);
+            if (window.SchemaManager) window.SchemaManager.buildBook(book, this.data.series);
+            if (window.AudioController) window.AudioController.loadTrack(book.audio);
         } else {
-            document.getElementById('app-container').innerHTML = '<h2>Book Not Found</h2>';
+            document.getElementById('app-root').innerHTML = '<h2>Book Not Found</h2>';
         }
     }
 
-    renderRead(params) {
+    routeRead(params) {
         const book = this.data.books.find(b => b.slug === params.slug);
-        if (book && window.Renderer) {
-            window.Renderer.renderReader(book);
+        if (book) {
+            if (window.Renderer) window.Renderer.renderRead(book);
+            // Schema is handled by book route normally, can leave as series or book depending on preference
+            if (window.AudioController) window.AudioController.loadTrack(book.audio);
         } else {
-            document.getElementById('app-container').innerHTML = '<h2>Book Not Found</h2>';
+             document.getElementById('app-root').innerHTML = '<h2>Book Not Found</h2>';
         }
     }
 }
 
-// Initialize router when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.appRouter = new Router();
+    window.appRouter.init();
 });

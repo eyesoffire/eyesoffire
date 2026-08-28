@@ -1,30 +1,30 @@
 {
   "series": {
-    "title": "Eyes Of Fire Series",
-    "author": "Malik A. Ahmed",
-    "authorWebsite": "https://example.com/author",
+    "title": "Eyes of Fire",
+    "description": "An epic dark sci-fi and historical fantasy crossover series.",
     "lore": "Area 51 underground experiments, time fracture to medieval 1400s Italy, the stitched leather mask, and the legend of the woman with burning eyes.",
-    "description": "An epic series following a woman with burning eyes.",
-    "url": "https://example.com/eyes-of-fire-series"
+    "author": "Author Name",
+    "authorWebsite": "https://example.com"
   },
   "books": [
     {
       "id": "book-1",
       "slug": "the-woman-of-fire",
-      "title": "THE WOMAN OF FIRE (EYES OF FIRE BOOK 1)",
+      "title": "The Woman of Fire",
       "volume": 1,
-      "tagline": "The People I Left",
-      "cover": "assets/images/covers/book1-cover.png",
+      "tagline": "Betrayed. Silenced. Transformed.",
+      "cover": "https://res.cloudinary.com/wellfleet/image/upload/c_fill,f_auto,q_auto:good,w_860/8sjnw1mgwqv0u41ye8urspy48hbe",
       "releaseDate": "2023-01-01",
       "isbn": "978-0000000000",
       "pageCount": 350,
       "blurb": "The people I left behind were never the people I thought they were.<br><br>I grew up believing that the first hands to hold me would be...",
+      "status": "Available Now",
+      "format": "Hardcover / Paperback / Ebook",
+      "chronology": "Book 1 of the Eyes of Fire Series",
       "retailers": [
         { "name": "Amazon US", "url": "https://amazon.com/" },
         { "name": "Amazon UK", "url": "https://amazon.co.uk/" },
         { "name": "Barnes & Noble", "url": "https://barnesandnoble.com/" },
-        { "name": "Walmart", "url": "https://walmart.com/" },
-        { "name": "Apple Books", "url": "https://apple.com/apple-books/" },
         { "name": "Kobo", "url": "https://kobo.com/" }
       ],
       "goodreads": "https://goodreads.com/",
@@ -37,18 +37,17 @@
       "excerpts": [
         {
           "title": "The People I Left",
-          "content": "<p>The metal walls of the bunker felt colder than usual...</p><p>Time was a fracture, an illusion I was about to break.</p>"
+          "content": "<p>The metal walls of the bunker felt colder than usual. Echoes of footsteps reverberated through the long, sterile corridors of Area 51. I knew what they wanted. I knew what they were going to do.</p><p>Time was a fracture, an illusion I was about to break. And the stitched leather mask they forced upon me was just the beginning.</p>"
         },
         {
           "title": "What's Left in Me?",
-          "content": "<p>I opened my eyes and the world was burning.</p><p>Not with fire, but with a light that shouldn't exist in 1400s Italy.</p>"
+          "content": "<p>I opened my eyes and the world was burning.</p><p>Not with fire, but with a light that shouldn't exist in 1400s Italy. The air smelled of ash and old magic, a stark contrast to the sterile scent of the underground labs.</p>"
         }
-      ],
-      "status": "published"
+      ]
     },
     {
       "id": "book-2",
-      "slug": "eyes-of-fire-book-2",
+      "slug": "eyes-of-fire-volume-2",
       "title": "Eyes of Fire: Volume 2",
       "volume": 2,
       "tagline": "The legend continues.",
@@ -57,14 +56,16 @@
       "isbn": "TBD",
       "pageCount": 0,
       "blurb": "The next chapter in the Eyes of Fire series.",
+      "status": "Pre-Order",
+      "format": "Ebook",
+      "chronology": "Book 2 of the Eyes of Fire Series",
       "retailers": [],
       "audio": {
         "platform": "spotify",
         "uri": "",
         "embedUrl": ""
       },
-      "excerpts": [],
-      "status": "preorder"
+      "excerpts": []
     }
   ]
 }
