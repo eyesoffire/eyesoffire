@@ -16,7 +16,30 @@
       "description": "{{series.description}}",
       "url": "{{site.baseUrl}}#/",
       "image": "{{site.logo}}",
-      "genre": "{{series.genres}}"
+      "genre": "{{series.genres}}",
+      "author": {
+        "@type": "Person",
+        "@id": "https://malik-a-ahmed.com/#author",
+        "name": "Malik A. Ahmed",
+        "url": "https://malik-a-ahmed.com/",
+        "sameAs": [
+          "https://orcid.org/0009-0009-9031-8218",
+          "https://isni.org/isni/0000000530781378",
+          "https://www.wikidata.org/wiki/Q141143173",
+          "https://www.imdb.com/name/nm18847671",
+          "https://www.goodreads.com/author/show/71597694",
+          "https://www.amazon.com/author/malikaahmed",
+          "https://openlibrary.org/authors/OL16558165A",
+          "https://app.thestorygraph.com/authors/87917428-f975-46a6-b474-4653b008debc",
+          "https://www.bookbub.com/authors/malik-a-ahmed",
+          "https://x.com/malik_a_ahmed",
+          "https://www.instagram.com/author.malikaahmed",
+          "https://youtube.com/@author.malikaahmed",
+          "https://bsky.app/profile/malik-a-ahmed.com",
+          "https://muckrack.com/malik-a-ahmed",
+          "https://www.crunchbase.com/person/malik-a-ahmed-46b8"
+        ]
+      }
     }
   ],
   "routes": {
@@ -32,13 +55,16 @@
       "the-woman-of-fire": {
         "@context": "https://schema.org",
         "@type": "Book",
+        "@id": "{{site.baseUrl}}#/books/the-woman-of-fire",
         "name": "{{book.title}}",
         "alternateName": "{{book.subtitle}}",
-        "isbn": "{{book.isbn}}",
-        "numberOfPages": "{{book.pages}}",
-        "datePublished": "{{book.datePublished}}",
+        "isbn": "979-8193132844",
+        "numberOfPages": 343,
+        "datePublished": "2026-08-17",
         "image": "{{book.coverRemote}}",
-        "inLanguage": "{{book.language}}",
+        "inLanguage": "en",
+        "bookFormat": "https://schema.org/Paperback",
+        "position": "1",
         "genre": [
           "Dark Fantasy",
           "Psychological Suspense",
@@ -46,32 +72,76 @@
           "Historical Fantasy",
           "Thriller"
         ],
+        "author": {
+          "@type": "Person",
+          "@id": "https://malik-a-ahmed.com/#author",
+          "name": "Malik A. Ahmed",
+          "url": "https://malik-a-ahmed.com/",
+          "sameAs": [
+            "https://orcid.org/0009-0009-9031-8218",
+            "https://isni.org/isni/0000000530781378",
+            "https://www.wikidata.org/wiki/Q141143173",
+            "https://www.goodreads.com/author/show/71597694",
+            "https://www.amazon.com/author/malikaahmed",
+            "https://openlibrary.org/authors/OL16558165A"
+          ]
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Independently published"
+        },
         "isPartOf": {
           "@type": "BookSeries",
-          "name": "{{series.title}}"
+          "name": "{{series.title}}",
+          "url": "{{site.baseUrl}}#/"
         },
-        "offers": [
+        "workExample": [
           {
-            "@type": "Offer",
+            "@type": "Book",
+            "bookFormat": "https://schema.org/Paperback",
+            "isbn": "979-8193132844",
+            "numberOfPages": 343,
+            "datePublished": "2026-08-17",
+            "url": "https://www.amazon.com/dp/B0HFNJ67G4",
+            "offers": {
+              "@type": "Offer",
+              "url": "https://www.amazon.com/dp/B0HFNJ67G4",
+              "availability": "https://schema.org/InStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Amazon"
+              }
+            }
+          },
+          {
+            "@type": "Book",
+            "bookFormat": "https://schema.org/EBook",
+            "datePublished": "2026-08-02",
             "url": "https://www.amazon.com/dp/B0HCLCFY7Z",
-            "availability": "https://schema.org/InStock"
-          },
-          {
-            "@type": "Offer",
-            "url": "https://www.amazon.co.uk/dp/B0HCLCFY7Z",
-            "availability": "https://schema.org/InStock"
-          },
-          {
-            "@type": "Offer",
-            "url": "https://www.amazon.ca/dp/B0HCLCFY7Z",
-            "availability": "https://schema.org/InStock"
+            "offers": {
+              "@type": "Offer",
+              "url": "https://www.amazon.com/dp/B0HCLCFY7Z",
+              "price": "3.99",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Amazon"
+              }
+            }
           }
+        ],
+        "sameAs": [
+          "https://openlibrary.org/works/OL45888822W",
+          "https://www.amazon.com/dp/B0HFNJ67G4",
+          "https://www.amazon.com/dp/B0HCLCFY7Z"
         ]
       },
       "volume-two": {
         "@context": "https://schema.org",
         "@type": "Book",
         "name": "{{book.title}}",
+        "position": "2",
         "isPartOf": {
           "@type": "BookSeries",
           "name": "{{series.title}}"
@@ -81,6 +151,7 @@
         "@context": "https://schema.org",
         "@type": "Book",
         "name": "{{book.title}}",
+        "position": "3",
         "isPartOf": {
           "@type": "BookSeries",
           "name": "{{series.title}}"
