@@ -1,0 +1,104 @@
+{
+  "_comment": "MANUAL JSON-LD CONTROL FILE — edit this file only. It is loaded by the website on every page. Deploy this file after editing and the new JSON-LD is used site-wide.",
+  "global": [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "{{site.baseUrl}}#website",
+      "name": "{{site.name}}",
+      "url": "{{site.baseUrl}}"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BookSeries",
+      "@id": "{{site.baseUrl}}#eyes-of-fire",
+      "name": "{{series.title}}",
+      "description": "{{series.description}}",
+      "url": "{{site.baseUrl}}#/",
+      "image": "{{site.logo}}",
+      "genre": "{{series.genres}}"
+    }
+  ],
+  "routes": {
+    "home": {
+      "@context": "https://schema.org",
+      "@type": "BookSeries",
+      "name": "{{series.title}}",
+      "description": "{{series.description}}",
+      "url": "{{site.baseUrl}}#/",
+      "genre": "{{series.genres}}"
+    },
+    "books": {
+      "the-woman-of-fire": {
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": "{{book.title}}",
+        "alternateName": "{{book.subtitle}}",
+        "isbn": "{{book.isbn}}",
+        "numberOfPages": "{{book.pages}}",
+        "datePublished": "{{book.datePublished}}",
+        "image": "{{book.coverRemote}}",
+        "inLanguage": "{{book.language}}",
+        "genre": [
+          "Dark Fantasy",
+          "Psychological Suspense",
+          "Science Fiction",
+          "Historical Fantasy",
+          "Thriller"
+        ],
+        "isPartOf": {
+          "@type": "BookSeries",
+          "name": "{{series.title}}"
+        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "url": "https://www.amazon.com/dp/B0HCLCFY7Z",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "url": "https://www.amazon.co.uk/dp/B0HCLCFY7Z",
+            "availability": "https://schema.org/InStock"
+          },
+          {
+            "@type": "Offer",
+            "url": "https://www.amazon.ca/dp/B0HCLCFY7Z",
+            "availability": "https://schema.org/InStock"
+          }
+        ]
+      },
+      "volume-two": {
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": "{{book.title}}",
+        "isPartOf": {
+          "@type": "BookSeries",
+          "name": "{{series.title}}"
+        }
+      },
+      "volume-three": {
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": "{{book.title}}",
+        "isPartOf": {
+          "@type": "BookSeries",
+          "name": "{{series.title}}"
+        }
+      }
+    },
+    "pages": {
+      "the-world": {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "{{page.title}}",
+        "description": "{{page.seo.description}}",
+        "url": "{{site.baseUrl}}#/page/{{page.slug}}",
+        "isPartOf": {
+          "@type": "BookSeries",
+          "name": "{{series.title}}"
+        }
+      }
+    }
+  }
+}
